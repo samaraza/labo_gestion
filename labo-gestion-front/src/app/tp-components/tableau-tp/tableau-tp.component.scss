@@ -1,0 +1,64 @@
+.mat-card {
+    width: 100%;
+}
+
+.mat-card-content {
+    padding: 0;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-header-cell.action-header {
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Ancienne règle .add (plus utilisée) */
+.add {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+/* ========== Styles pour la barre de recherche et le bouton ========== */
+.search-and-add {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+
+    .search-field {
+        width: 300px;      /* ← largeur réduite du champ de recherche */
+        flex: none;        /* empêche l'étirement */
+    }
+}
+
+/* Cache l'ancien bouton s'il existe encore */
+.add-button {
+    display: none;
+}

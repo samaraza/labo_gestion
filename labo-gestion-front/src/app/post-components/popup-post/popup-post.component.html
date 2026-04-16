@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier post' : 'Ajouter post' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="postForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Titre</mat-label>
+      <input matInput formControlName="title" placeholder="Titre">
+      <mat-error *ngIf="postForm.get('title')!.hasError('required')">Titre est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Date</mat-label>
+      <input matInput formControlName="date" type="date" placeholder="AAAA-MM-JJ">
+      <mat-error *ngIf="postForm.get('date')!.hasError('required')">Date est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Content</mat-label>
+      <textarea matInput formControlName="content"></textarea>
+      <mat-error *ngIf="postForm.get('content')!.hasError('required')">Contenu est requis</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

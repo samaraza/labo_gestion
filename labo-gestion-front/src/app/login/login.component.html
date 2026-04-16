@@ -1,0 +1,59 @@
+<body>
+<div class="container">
+  <div class="forms-container">
+    <div class="signin-signup">
+
+      <form class="sign-in-form" (ngSubmit)="submit()" [formGroup]="signInForm">
+        <h2 class="title">Bienvenue de nouveau</h2>
+        <div class="input-container">
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input formControlName="email" type="text" placeholder="Email" />
+          </div>
+
+          <div *ngIf="signInForm.controls.email?.touched && signInForm.controls.email?.invalid" class="error-message">
+            {{ emailErrorMessage }}
+          </div>
+
+        </div>
+
+        <div class="input-container">
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Mot de passe" formControlName="password" />
+          </div>
+
+          <div *ngIf="signInForm.controls.password?.touched && signInForm.controls.password?.invalid" class="error-message">
+            {{ passwordErrorMessage }}
+          </div>
+        </div>
+
+        <input type="submit" value="Se connecter" class="btn solid" [disabled]="!signInForm.valid" [ngClass]="{'btn-disabled': !signInForm.valid, 'btn-enabled': signInForm.valid}" />
+
+
+
+      </form>
+    </div>
+  </div>
+
+  <div class="panels-container">
+    <div class="panel left-panel">
+      <div class="content">
+        <h3>Ravi d'un compte?</h3>
+        <p>
+          Veuillez s'il vous plait contacternotre l'administrateur!
+        </p>
+
+
+        <p class="social-text">Pas encore de compte ?</p>
+        <button type="button" class="btn transparent" (click)="goToRegister()">Créer un compte</button>
+
+        <!-- <button class="btn transparent" id="sign-up-btn" routerLink="/register">
+Sign Up
+</button> -->
+      </div>
+      <img src="..\..\..\assets\woman-scientist-examine-test-material-concept-free-vector-removebg-preview.png" class="image" alt="" />
+    </div>
+  </div>
+</div>
+</body>

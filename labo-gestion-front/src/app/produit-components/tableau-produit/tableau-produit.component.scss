@@ -1,0 +1,45 @@
+.mat-card {
+    width: 100%;
+}
+
+.mat-card-content {
+    padding: 0;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-header-cell.action-header {
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    /* Espace entre les boutons, ajustez selon vos besoins */
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add {
+    margin-left: 100px;
+    margin-right: 20px;
+    padding: 2px;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}

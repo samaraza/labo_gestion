@@ -1,0 +1,65 @@
+<h1>Gestion des utilisateurs</h1>
+<mat-card>
+  <mat-card-header>
+    <mat-form-field>
+      <input matInput (keyup)="Filterchange($event)" placeholder="Search by keyword" />
+    </mat-form-field>
+    <!-- Add button visible only for Admin -->
+    <button *ngIf="isAdmin" (click)="addUser()" mat-raised-button color="primary" style="width: 20%;" class="add">
+      Add User
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table *ngIf="!isLoading" matSort mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- First Name column -->
+      <ng-container matColumnDef="firstName">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> First Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+      </ng-container>
+
+      <!-- Last Name column -->
+      <ng-container matColumnDef="lastName">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Last Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+      </ng-container>
+
+      <!-- Email column -->
+      <ng-container matColumnDef="email">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Email</th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+      <!-- Role column -->
+      <ng-container matColumnDef="role">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Role</th>
+        <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- Admin buttons -->
+          <ng-container *ngIf="isAdmin">
+            <button (click)="editUser(element)" mat-raised-button color="primary">Edit</button>
+            <button (click)="deleteUser(element.id)" mat-raised-button color="warn">Delete</button>
+          </ng-container>
+          <!-- Director button: assign to school -->
+          <button *ngIf="isDirector" (click)="affecterUser(element)" mat-raised-button color="accent">
+            Assign to my school
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-card-footer>
+</mat-card>

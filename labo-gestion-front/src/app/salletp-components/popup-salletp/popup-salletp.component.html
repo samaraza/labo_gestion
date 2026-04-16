@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier salle de TP' : 'Ajouter salle de TP' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="salleTpForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Numéro de salle TP</mat-label>
+      <input matInput formControlName="numero" placeholder="Numéro de salle TP">
+      <mat-error *ngIf="salleTpForm.get('numero')!.hasError('required')">Numéro est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Armoires</mat-label>
+      <mat-select formControlName="armoires" multiple>
+        <mat-option *ngFor="let armoire of armoires" [value]="armoire.id">{{ armoire.designation }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

@@ -1,0 +1,53 @@
+<h1>Gestion des salles de TP</h1>
+<mat-card>
+  <mat-card-header>
+    <mat-form-field>
+      <input matInput (keyup)="Filterchange($event)" placeholder="Chercher par un mot clé" />
+    </mat-form-field>
+    <button *ngIf="connectedUserRole == roles[2]" (click)="addSalleTp()" mat-raised-button color="primary" style="width: 20%;" class="add">Ajouter une salle TP</button>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+
+    <table *ngIf="!isLoading" matSort mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%;">
+      <ng-container matColumnDef="numero">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Numéro</th>
+        <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+      </ng-container>
+      <ng-container matColumnDef="armoires">
+        <th mat-header-cell *matHeaderCellDef> Armoires </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.armoires && element.armoires.length > 0">
+                        <span *ngFor="let armoire of element.armoires; let last = last">
+                      {{ armoire.designation }}{{ last ? '' : ', ' }}
+                    </span>
+          </ng-container>
+          <span *ngIf="!element.armoires || element.armoires.length === 0">
+                    Aucune armoire
+                  </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="action-header"> {{(connectedUserRole == roles[2]) ?"Action" :""}} </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="connectedUserRole == roles[2]" class="button-group">
+            <button (click)="editSalleTp(element)" mat-raised-button color="primary">Modifier</button>
+            <button (click)="deleteSalleTp(element.id)" mat-raised-button color="warn">Supprimer</button>
+            <!-- <button mat-raised-button class="delete-button" style="background-color: green; color: white;">Détails</button> -->
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+  <br>
+  <mat-card-footer>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-card-footer>
+</mat-card>

@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier armoire' : 'Ajouter armoire' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="armoireForm">
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Désignation de l'armoire</mat-label>
+      <input matInput formControlName="designation" placeholder="Désignation de l'armoire">
+      <mat-error *ngIf="armoireForm.get('designation')!.hasError('required')">Désignation est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Produits</mat-label>
+      <mat-select formControlName="produits" multiple>
+        <mat-option *ngFor="let produit of produits" [value]="produit.id">{{ produit.designation }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Annuler</button>
+  <button mat-raised-button color="primary" (click)="submit()">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

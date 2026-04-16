@@ -1,0 +1,27 @@
+.body {
+    width: 100%;
+    /* Utilisez la largeur totale de la fenêtre */
+    height: 100vh;
+    margin-left: 0;
+    /* Initialisez la marge gauche à zéro */
+    z-index: 0;
+    position: relative;
+    top: 0;
+    //background: #f4f7fa;
+    padding: 3rem;
+    transition: all 0.5s ease;
+}
+
+.body-trimmed {
+    width: calc(100% - 16.5625rem);
+    margin-left: 16.5625rem;
+    padding-left: 0rem;
+    /* Déplacez le contenu vers la droite pour ouvrir le sidebar */
+}
+
+.body-md-screen {
+    /*  width: calc(100% - 5rem);
+    margin-left: 0rem;*/
+    padding-right: 0px;
+    /* Retournez à la position initiale lorsque le sidebar est fermé */
+}

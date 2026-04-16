@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Assign user to your school</h1>
+<div mat-dialog-content>
+  <p><strong>{{ data.user.firstname }} {{ data.user.lastname }}</strong> ({{ data.user.email }})</p>
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Role in the school</mat-label>
+    <mat-select [(value)]="selectedRole">
+      <mat-option value="PROFFESSEUR">Professor</mat-option>
+      <mat-option value="PREPARATEUR">Preparator</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-button color="primary" (click)="affecter()">Assign</button>
+</div>

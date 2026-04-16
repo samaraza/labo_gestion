@@ -1,0 +1,101 @@
+<h1>Gestion des préparations</h1>
+<mat-card>
+  <mat-card-header>
+    <mat-form-field>
+      <input matInput (keyup)="Filterchange($event)" placeholder="Chercher par un mot clé" />
+    </mat-form-field>
+    <button *ngIf="connectedUserRole == roles[2]" (click)="addPreparation()" mat-raised-button color="primary" style="width: 20%;" class="add">Ajouter une préparation</button>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+
+    <table *ngIf="!isLoading" matSort mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%;">
+
+      <ng-container matColumnDef="designation">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Désignation</th>
+        <td mat-cell *matCellDef="let element"> {{element.designation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Date</th>
+        <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantite">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Quantité</th>
+        <td mat-cell *matCellDef="let element"> {{element.quantite}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="produit1">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Produit 1</th>
+        <td mat-cell *matCellDef="let element"> {{element.produit1?.designation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantite1">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Quantité 1</th>
+        <td mat-cell *matCellDef="let element"> {{element.quantite1}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="produit2">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Produit 2</th>
+        <td mat-cell *matCellDef="let element"> {{element.produit2?.designation}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantite2">
+        <th mat-sort-header mat-header-cell *matHeaderCellDef> Quantité 2</th>
+        <td mat-cell *matCellDef="let element"> {{element.quantite2}} </td>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="produits">
+        <th mat-header-cell *matHeaderCellDef> Produits </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.produits && element.produits.length > 0">
+                        <span *ngFor="let produit of element.produits; let last = last">
+                      {{ produit.produit.designation }}{{ last ? '' : ', ' }}
+                    </span>
+          </ng-container>
+          <span *ngIf="!element.produits || element.produits.length === 0">
+                    Aucun produit
+                  </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantites">
+        <th mat-header-cell *matHeaderCellDef> Quantités </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.produits && element.produits.length > 0">
+                        <span *ngFor="let quantite of element.produits; let last = last">
+                      {{ quantite.quantiteAjoutee }}{{ last ? '' : ', ' }}
+                    </span>
+          </ng-container>
+          <span *ngIf="!element.produits || element.produits.length === 0">
+                    Aucune quantité
+                  </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="action-header"> {{(connectedUserRole == roles[2] ) ?"Action" :""}} </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="connectedUserRole == roles[2]" class="button-group">
+            <button (click)="editPreparation(element)" mat-raised-button color="primary">Modifier</button>
+            <button (click)="deletePreparation(element.id)" mat-raised-button color="warn">Supprimer</button>
+            <!-- <button mat-raised-button class="delete-button" style="background-color: green; color: white;">Détails</button> -->
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+  <br>
+  <mat-card-footer>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-card-footer>
+</mat-card>

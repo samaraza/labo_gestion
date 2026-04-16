@@ -1,0 +1,181 @@
+/* activate-account.component.css */
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* بطاقة التفعيل */
+.text-center {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  max-width: 90%;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* عنوان الصفحة */
+.text-center h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* النص الإضافي */
+.text-center p {
+  margin-bottom: 25px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* رسالة التفعيل الناجح */
+.activation-message {
+  text-align: center;
+}
+
+.activation-message h2 {
+  color: #48bb78;
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.activation-message p {
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 16px;
+}
+
+/* رسالة الخطأ */
+.activation-error {
+  text-align: center;
+}
+
+.activation-error h2 {
+  color: #f56565;
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.activation-error p {
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 16px;
+}
+
+/* الأزرار */
+.btn {
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a67d8;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-warning {
+  background: #f56565;
+  color: white;
+}
+
+.btn-warning:hover {
+  background: #e53e3e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+}
+
+.btn-link {
+  background: transparent;
+  color: #667eea;
+  padding: 8px 20px;
+  margin-top: 15px;
+}
+
+.btn-link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .text-center {
+    padding: 30px 20px;
+    width: 90%;
+  }
+
+  .text-center h2 {
+    font-size: 20px;
+  }
+
+  .btn {
+    padding: 10px 25px;
+    font-size: 14px;
+  }
+}
+
+/* Style pour le code input (si vous utilisez angular-code-input) */
+.code-input-container {
+  margin: 30px 0;
+}
+
+::ng-deep .code-input {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+::ng-deep .code-input input {
+  width: 50px !important;
+  height: 60px !important;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .code-input input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  outline: none;
+}
+
+::ng-deep .code-input input:disabled {
+  background-color: #f7fafc;
+  color: #a0aec0;
+}

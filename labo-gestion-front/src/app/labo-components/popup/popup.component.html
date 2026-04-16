@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier laboratoire' : 'Ajouter laboratoire' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="laboForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Type de laboratoire</mat-label>
+      <mat-select formControlName="laboType">
+        <mat-option *ngFor="let type of laboTypes" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Salles de TP</mat-label>
+      <mat-select formControlName="sallesTp" multiple>
+        <mat-option *ngFor="let salle of sallesTp" [value]="salle.id">{{ salle.numero }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

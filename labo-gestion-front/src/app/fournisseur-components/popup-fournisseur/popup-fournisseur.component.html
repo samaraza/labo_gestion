@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier fournisseur' : 'Ajouter fournisseur' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fournisseurForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="nom" placeholder="Nom du fournisseur">
+      <mat-error *ngIf="fournisseurForm.get('nom')!.hasError('required')">Nom est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Adresse</mat-label>
+      <input matInput formControlName="adresse" placeholder="Adresse">
+      <mat-error *ngIf="fournisseurForm.get('adresse')!.hasError('required')">Adresse est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Email de l'utilisateur">
+      <mat-error *ngIf="fournisseurForm.get('email')!.hasError('required')">Email est requis</mat-error>
+      <mat-error *ngIf="fournisseurForm.get('email')!.hasError('email')">Email non valide</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Numéro de téléphone</mat-label>
+      <input matInput formControlName="nmrTel" placeholder="Numéro de télépone">
+      <mat-error *ngIf="fournisseurForm.get('nmrTel')!.hasError('required')">Numéro de télépone est requis</mat-error>
+    </mat-form-field>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

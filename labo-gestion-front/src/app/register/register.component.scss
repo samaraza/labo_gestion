@@ -1,0 +1,105 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.forms-container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.sign-up-form {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.input-field {
+  margin-bottom: 15px;
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+
+    &:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+  }
+}
+
+.error-message {
+  color: #f56565;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding-left: 45px;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &.solid {
+    background: #667eea;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #5a67d8;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &.transparent {
+    background: transparent;
+    color: #667eea;
+    border: 1px solid #667eea;
+
+    &:hover {
+      background: #667eea;
+      color: white;
+    }
+  }
+}
+
+.social-text {
+  text-align: center;
+  margin: 20px 0 10px;
+  color: #666;
+}
+
+.panels-container {
+  display: none;
+}

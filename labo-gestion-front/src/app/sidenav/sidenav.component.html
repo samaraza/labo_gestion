@@ -1,0 +1,26 @@
+<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
+  <div class="logo-container">
+    <button class="logo" (click)="toggleCollapse()">B</button>
+    <div class="logo-text" @fadeIn *ngIf="collapsed">Bienvenue</div>
+    <button class="btn-close" @rot *ngIf="collapsed" (click)="closeSidenav()">
+      <i class="fal fa-times close-icon"></i>
+    </button>
+  </div>
+  <ul class="sidenav-nav">
+    <li class="sidenav-nav-item" *ngFor="let data of navData">
+      <ng-container *ngIf="data.roles.includes(connectedUserRole!)">
+        <a class="sidenav-nav-link" [routerLink]="[data.routeLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <i class="sidenav-link-icon" [class]="data.icon"></i>
+          <span class="sidenav-link-text" @fadeIn *ngIf="collapsed">{{data.label}}</span>
+        </a>
+      </ng-container>
+    </li>
+    <!-- Add the logout button at the end -->
+    <li class="sidenav-nav-item">
+      <a class="sidenav-nav-link" (click)="logout()">
+        <i class="sidenav-link-icon fas fa-sign-out-alt"></i>
+        <span class="sidenav-link-text" @fadeIn *ngIf="collapsed">Déconnexion</span>
+      </a>
+    </li>
+  </ul>
+</div>

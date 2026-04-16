@@ -1,0 +1,70 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEditing ? 'Modifier commande' : 'Ajouter commande' }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="scrollable-content">
+    <form [formGroup]="commandeForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Numéro</mat-label>
+        <input matInput formControlName="numero" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+
+        <input matInput formControlName="date" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Observation</mat-label>
+
+        <textarea matInput formControlName="observation"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Désignation</mat-label>
+
+        <input matInput formControlName="designation" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Fournisseur</mat-label>
+        <mat-select formControlName="fournisseur">
+          <mat-option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur">
+            {{ fournisseur.nom }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Directeur</mat-label>
+        <mat-select formControlName="directeur">
+          <mat-option *ngFor="let directeur of directeurs" [value]="directeur">
+            {{ directeur.firstname }} {{ directeur.lastname }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+      <div formArrayName="produits">
+        <div *ngFor="let produit of produitsFormArray.controls; let i = index" [formGroupName]="i">
+          <mat-form-field appearance="fill">
+            <mat-label>Produit</mat-label>
+            <mat-select formControlName="produit">
+              <mat-option *ngFor="let prod of produits" [value]="prod">
+                {{ prod.designation }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Quantité Ajoutée</mat-label>
+            <input matInput formControlName="quantiteAjoutee" type="number" />
+          </mat-form-field>
+          <button mat-button color="warn" (click)="removeProduit(i)">Supprimer</button>
+        </div>
+        <button mat-button color="primary" (click)="addProduit()">Ajouter Produit</button>
+      </div>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="submit()">Enregistrer</button>
+        <button mat-raised-button (click)="close()">Annuler</button>
+      </mat-card-actions>
+    </form>
+  </mat-card-content>
+</mat-card>

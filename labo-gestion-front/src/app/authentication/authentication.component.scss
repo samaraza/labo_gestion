@@ -1,0 +1,26 @@
+.authorization-message {
+    margin-top: 80px;
+    text-align: center;
+    background-color: #ffebee;
+    /* Light red background color */
+    border: 1px solid #d32f2f;
+    /* Red border */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 20px;
+    /* Padding around the content */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Drop shadow */
+}
+
+.authorization-message p {
+    margin-bottom: 10px;
+    /* Bottom margin for paragraphs */
+}
+
+.authorization-message button {
+    width: 200px;
+    /* Set width of the button */
+    margin-top: 20px;
+    /* Top margin for the button */
+}

@@ -1,0 +1,53 @@
+services:
+  postgres:
+    container_name: postgres-sql-labo
+    image: postgres
+    environment:
+      POSTGRES_USER: usernames
+      POSTGRES_PASSWORD: passwords
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: labo_gestion
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - spring-demos
+    restart: unless-stopped
+  mail-dev:
+    container_name: mail-dev-labo
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+
+  labo-api:
+    container_name: labo-api
+    image: labo/labo:0.0.4
+    ports:
+      - 8089:8089
+    networks:
+      - spring-demos
+    depends_on:
+      - postgres
+
+
+  labo-ui:
+    container_name: labo-ui
+    image: labo/labo-ui:0.0.1
+    ports:
+      - 8080:80
+    networks:
+      - spring-demos
+    depends_on:
+      - labo-api
+
+
+
+networks:
+  spring-demos:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

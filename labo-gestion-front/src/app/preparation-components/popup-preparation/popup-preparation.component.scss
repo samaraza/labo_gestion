@@ -1,0 +1,37 @@
+// جعل محتوى النافذة قابل للتمرير
+.mat-dialog-content {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  padding-right: 16px;
+}
+
+// تثبيت الأزرار في الأسفل وجعلها واضحة
+.mat-dialog-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 16px !important;
+  padding: 16px 24px !important;
+  margin-top: 16px !important;
+  border-top: 1px solid #e0e0e0 !important;
+  background-color: white !important;
+
+  button {
+    min-width: 100px !important;
+
+    &.ajouter {
+      background-color: #3f51b5 !important;
+      color: white !important;
+    }
+
+    &.annuler {
+      background-color: #f44336 !important;
+      color: white !important;
+    }
+  }
+}
+
+// جعل الحقول تظهر بشكل منظم
+mat-form-field {
+  width: 100%;
+  margin-bottom: 8px;
+}

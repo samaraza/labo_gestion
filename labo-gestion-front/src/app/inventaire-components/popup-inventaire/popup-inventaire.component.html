@@ -1,0 +1,50 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier inventaire' : 'Ajouter inventaire' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="inventaireForm">
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Année scolaire</mat-label>
+      <input matInput formControlName="anneeScolaire" placeholder="Désignation du produit">
+      <mat-error *ngIf="inventaireForm.get('anneeScolaire')!.hasError('required')">Année scolaire est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Commentaire</mat-label>
+      <textarea matInput formControlName="commentaire"></textarea>
+      <mat-error *ngIf="inventaireForm.get('commentaire')!.hasError('required')">Commentaire est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Date</mat-label>
+      <input matInput formControlName="date" type="date" placeholder="AAAA-MM-JJ" >
+      <mat-error *ngIf="inventaireForm.get('date')!.hasError('required')">Date est requise</mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Responsable</mat-label>
+      <input matInput formControlName="responsable" placeholder="Entrez un reponsable">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Produit</mat-label>
+      <mat-select formControlName="produit" placeholder="Sélectionnez un produit">
+        <mat-option *ngFor="let produit of produits" [value]="produit">{{ produit.designation }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="inventaireForm.get('produit')!.hasError('required')">Produit est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Quantité restante</mat-label>
+      <input matInput formControlName="quantiteRestante" type="number" placeholder="Entrez une quantite restante">
+    </mat-form-field>
+
+
+
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

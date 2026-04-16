@@ -1,0 +1,59 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier préparation' : 'Ajouter préparation' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="preparationForm">
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" placeholder="Désignation du préparation">
+      <mat-error *ngIf="preparationForm.get('designation')!.hasError('required')">Désignation est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Date</mat-label>
+      <input matInput formControlName="date" placeholder="Date sous forme jj-mm-aaaa">
+      <mat-error *ngIf="preparationForm.get('date')!.hasError('required')">Date est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Produit 1</mat-label>
+      <mat-select formControlName="produit1" placeholder="Sélectionnez produit 1">
+        <mat-option *ngFor="let produit of produits" [value]="produit">{{ produit.designation }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="preparationForm.get('produit1')!.hasError('required')">Produit 1 est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Quantité 1</mat-label>
+      <input matInput formControlName="quantite1"  placeholder="Quantité 1">
+      <mat-error *ngIf="preparationForm.get('quantite1')!.hasError('required')">Quantité 1 est requis</mat-error>
+      <mat-error *ngIf="preparationForm.get('quantite1')!.hasError('quantityExceeds')">Quantité 1 ne peut pas dépasser la quantité initiale du produit sélectionné</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Produit 2</mat-label>
+      <mat-select formControlName="produit2" placeholder="Sélectionnez produit 2">
+        <mat-option *ngFor="let produit of produits" [value]="produit">{{ produit.designation }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="preparationForm.get('produit2')!.hasError('required')">Produit 2 est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Quantité 2</mat-label>
+      <input matInput formControlName="quantite2" placeholder="Quantité 2">
+      <mat-error *ngIf="preparationForm.get('quantite2')!.hasError('required')">Quantité 2 est requis</mat-error>
+      <mat-error *ngIf="preparationForm.get('quantite2')!.hasError('quantityExceeds')">Quantité 2 ne peut pas dépasser la quantité initiale du produit sélectionné</mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Quantité</mat-label>
+      <input matInput formControlName="quantite"  type="number" placeholder="Quantité">
+      <mat-error *ngIf="preparationForm.get('quantite')!.hasError('required')">Quantité est requis</mat-error>
+    </mat-form-field>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

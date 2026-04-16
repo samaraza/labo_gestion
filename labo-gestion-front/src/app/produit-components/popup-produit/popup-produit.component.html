@@ -1,0 +1,93 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier produit' : 'Ajouter produit' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="produitForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Désignation</mat-label>
+      <input matInput formControlName="designation" placeholder="Désignation du produit">
+      <mat-error *ngIf="produitForm.get('designation')!.hasError('required')">Désignation est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Référence</mat-label>
+      <input matInput formControlName="reference" placeholder="Référence du produit">
+      <mat-error *ngIf="produitForm.get('reference')!.hasError('required')">Référence est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type" placeholder="Sélectionnez un type">
+        <mat-option *ngFor="let type of produitTypes" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('type')!.hasError('required')">Type est requis</mat-error>
+    </mat-form-field>
+
+    <!--<mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Date d'expiration</mat-label>
+      <input matInput formControlName="dateExp" placeholder="Entrez une date d'expiration">
+      <mat-error *ngIf="produitForm.get('dateExp')!.hasError('required')">Date d'expiration est requise</mat-error>
+    </mat-form-field>-->
+
+    <!-- Replace text input with date picker -->
+    <mat-form-field appearance="fill">
+      <mat-label>Date d'expiration</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dateExp">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="produitForm.get('dateExp')!.hasError('required')">
+        Date d'expiration est requise
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Catégorie</mat-label>
+      <mat-select formControlName="categorie" placeholder="Sélectionnez une catégorie">
+        <mat-option *ngFor="let categorie of categories" [value]="categorie">{{ categorie }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('categorie')!.hasError('required')">Catégorie est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Rubrique</mat-label>
+      <mat-select formControlName="rubrique" placeholder="Sélectionnez une rubrique">
+        <mat-option *ngFor="let rubrique of rubriques" [value]="rubrique">{{ rubrique }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('rubrique')!.hasError('required')">Rubrique est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Durabilité</mat-label>
+      <mat-select formControlName="durabilite" placeholder="Sélectionnez une durabilité">
+        <mat-option *ngFor="let durabilite of durabilites" [value]="durabilite">{{ durabilite }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('durabilite')!.hasError('required')">Durabilité est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Quantité initiale</mat-label>
+      <input matInput formControlName="quantiteInitiale" placeholder="Quantité du produit">
+      <mat-error *ngIf="produitForm.get('quantiteInitiale')!.hasError('required')">Quantité est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Unité de mesure</mat-label>
+      <mat-select formControlName="uniteMesure" placeholder="Sélectionnez une unité de mesure">
+        <mat-option *ngFor="let uniteMesure of uniteMesures" [value]="uniteMesure">{{ uniteMesure }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('uniteMesure')!.hasError('required')">Unité de mesure est requise</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Fournisseur</mat-label>
+      <mat-select formControlName="fournisseur" placeholder="Sélectionnez un fournisseur">
+        <mat-option *ngFor="let fournisseur of fournisseurs" [value]="fournisseur">{{ fournisseur.nom }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="produitForm.get('fournisseur')!.hasError('required')">Fournisseur est requis</mat-error>
+    </mat-form-field>
+
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

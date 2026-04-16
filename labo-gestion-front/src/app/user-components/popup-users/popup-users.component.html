@@ -1,0 +1,44 @@
+<h1 mat-dialog-title>{{ isEditing ? 'Modifier utilisateur' : 'Ajouter utilisateur' }}</h1>
+<div mat-dialog-content style="max-height: 70vh; overflow-y: auto;">
+  <form [formGroup]="userForm">
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="firstName" placeholder="Prénom de l'utilisateur">
+      <mat-error *ngIf="userForm.get('firstName')!.hasError('required')">Prénom est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Nom de famille</mat-label>
+      <input matInput formControlName="lastName" placeholder="Nom de famille de l'utilisateur">
+      <mat-error *ngIf="userForm.get('lastName')!.hasError('required')">Nom de famille est requis</mat-error>
+    </mat-form-field>
+
+    <!-- Champ email avec readonly en modification -->
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="Email de l'utilisateur" [readonly]="isEditing">
+      <mat-error *ngIf="userForm.get('email')!.hasError('required')">Email est requis</mat-error>
+      <mat-error *ngIf="userForm.get('email')!.hasError('email')">Email non valide</mat-error>
+    </mat-form-field>
+
+    <!-- Mot de passe : affiché seulement en ajout -->
+    <mat-form-field *ngIf="!isEditing" appearance="fill" style="margin-right: 110px;">
+      <mat-label>Mot de passe</mat-label>
+      <mat-icon matPrefix>password</mat-icon>
+      <input matInput formControlName="password" />
+      <mat-error *ngIf="userForm.get('password')!.hasError('required')">Mot de passe est requis</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-right: 110px;">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="role" placeholder="Sélectionnez un rôle">
+        <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="userForm.get('role')!.hasError('required')">Rôle est requis</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()" class="annuler">Annuler</button>
+  <button mat-button (click)="submit()" class="ajouter">{{ isEditing ? 'Modifier' : 'Ajouter' }}</button>
+</div>

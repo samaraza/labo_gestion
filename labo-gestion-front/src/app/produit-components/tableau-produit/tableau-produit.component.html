@@ -1,0 +1,98 @@
+<h1>Gestion des produits</h1>
+<mat-card>
+  <mat-card-header>
+    <mat-form-field>
+      <input matInput (keyup)="Filterchange($event)" placeholder="Chercher par un mot clé" />
+    </mat-form-field>
+    <button *ngIf="connectedUserRole == roles[2]" (click)="addProduit()" mat-raised-button color="primary" style="width: 20%;" class="add">Ajouter un produit</button>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table *ngIf="!isLoading" matSort mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%;">
+      <!-- Numéro de référence -->
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Numéro de référence </th>
+        <td mat-cell *matCellDef="let produit"> {{!isEmpty(produit.reference) ? produit.reference :"Non défini"}} </td>
+      </ng-container>
+
+      <!-- Désignation -->
+      <ng-container matColumnDef="designation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Désignation </th>
+        <td mat-cell *matCellDef="let produit"> {{!isEmpty(produit.designation) ? produit.designation :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let produit"> {{ !isEmpty(produit.type) ? produit.type :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Date d'expiration -->
+      <ng-container matColumnDef="dateExp">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date d'expiration </th>
+        <td mat-cell *matCellDef="let produit"> {{!isEmpty(produit.dateExp) ? produit.dateExp :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Catégorie -->
+      <ng-container matColumnDef="categorie">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Catégorie </th>
+        <td mat-cell *matCellDef="let produit"> {{ !isEmpty(produit.categorie) ? produit.categorie :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Rubrique -->
+      <ng-container matColumnDef="rubrique">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Rubrique </th>
+        <td mat-cell *matCellDef="let produit"> {{ !isEmpty(produit.rubrique) ? produit.rubrique :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Durabilité -->
+      <ng-container matColumnDef="durabilite">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Durabilité </th>
+        <td mat-cell *matCellDef="let produit"> {{ !isEmpty(produit.durabilite) ? produit.durabilite :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Quantité initiale -->
+      <ng-container matColumnDef="quantiteInitiale">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Quantité initiale </th>
+        <td mat-cell *matCellDef="let produit"> {{ !isEmpty(produit.quantiteInitiale) ? produit.quantiteInitiale :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Fournisseur -->
+      <ng-container matColumnDef="fournisseur">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fournisseur </th>
+        <td mat-cell *matCellDef="let produit">
+          {{ produit.fournisseur ? produit.fournisseur.nom : 'Non assigné' }}
+        </td>
+      </ng-container>
+
+      <!-- Unité de mesure -->
+      <ng-container matColumnDef="uniteMesure">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Unité de mesure </th>
+        <td mat-cell *matCellDef="let produit"> {{!isEmpty(produit.uniteMesure) ? produit.uniteMesure :"Non défini" }} </td>
+      </ng-container>
+
+      <!-- Action -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="action-header"> {{(connectedUserRole == roles[2] ) ?"Action" :""}} </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="connectedUserRole == roles[2]" class="button-group">
+            <button (click)="editProduit(element)" mat-raised-button color="primary">Modifier</button>
+            <button (click)="deleteProduit(element.id)" mat-raised-button color="warn">Supprimer</button>
+            <!-- <button mat-raised-button class="delete-button" style="background-color: green; color: white;">Détails</button> -->
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Define the table columns -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+  <br>
+  <mat-card-footer>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-card-footer>
+</mat-card>

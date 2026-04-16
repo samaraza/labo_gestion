@@ -1,0 +1,90 @@
+<div class="tp-container">
+  <h2>Gestion des TPs</h2>
+
+  <!-- شريط البحث والزر في نفس السطر -->
+  <div class="search-and-add">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Chercher par un mot clé</mat-label>
+      <input matInput (keyup)="Filterchange($event)" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addTp()">Ajouter une TP</button>
+  </div>
+
+  <!-- الجدول -->
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Type -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+        <td mat-cell *matCellDef="let element"> {{ element.type }} </td>
+      </ng-container>
+
+      <!-- Jour du TP -->
+      <ng-container matColumnDef="jourTp">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Jour du TP </th>
+        <td mat-cell *matCellDef="let element"> {{ element.jourTp }} </td>
+      </ng-container>
+
+      <!-- Professeur -->
+      <ng-container matColumnDef="prof">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Professeur </th>
+        <td mat-cell *matCellDef="let element"> {{ element.profFirstName }} {{ element.profLastName }} </td>
+      </ng-container>
+
+      <!-- Salle TP -->
+      <ng-container matColumnDef="salleTp">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Salle de TP </th>
+        <td mat-cell *matCellDef="let element"> {{ element.salleTpNumero }} </td>
+      </ng-container>
+
+      <!-- Niveau scolaire -->
+      <ng-container matColumnDef="niveauScolaire">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Niveau scolaire </th>
+        <td mat-cell *matCellDef="let element"> {{ element.niveauScolaire }} </td>
+      </ng-container>
+
+      <!-- Préparations (noms) -->
+      <ng-container matColumnDef="preparations">
+        <th mat-header-cell *matHeaderCellDef> Préparations </th>
+        <td mat-cell *matCellDef="let element"> {{ getPreparationsNames(element.preparations) }} </td>
+      </ng-container>
+
+      <!-- Quantités Pré (préparations) -->
+      <ng-container matColumnDef="quantitePrep">
+        <th mat-header-cell *matHeaderCellDef> Quantités Pré </th>
+        <td mat-cell *matCellDef="let element"> {{ getPreparationsQuantites(element.preparations) }} </td>
+      </ng-container>
+
+      <!-- Produits (noms) -->
+      <ng-container matColumnDef="produits">
+        <th mat-header-cell *matHeaderCellDef> Produits </th>
+        <td mat-cell *matCellDef="let element"> {{ getProduitsNames(element.produits) }} </td>
+      </ng-container>
+
+      <!-- Quantités Pré (produits) -->
+      <ng-container matColumnDef="quantiteProd">
+        <th mat-header-cell *matHeaderCellDef> Quantités Pré </th>
+        <td mat-cell *matCellDef="let element"> {{ getProduitsQuantites(element.produits) }} </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="editTp(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteTp(element.id!)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

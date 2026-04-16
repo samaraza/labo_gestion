@@ -1,0 +1,84 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEditing ? 'Modifier TP' : 'Ajouter TP' }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="scrollable-content">
+    <form [formGroup]="tpForm">
+      <div class="row">
+        <mat-form-field appearance="fill">
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
+            <mat-option *ngFor="let t of tpTypes" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Jour TP</mat-label>
+          <input matInput formControlName="jourTp" placeholder="dd/MM/yyyy" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="fill">
+          <mat-label>Professeur</mat-label>
+          <mat-select formControlName="profId">
+            <mat-option *ngFor="let u of users" [value]="u.id">{{ u.firstname }} {{ u.lastname }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Salle TP</mat-label>
+          <mat-select formControlName="salleTpId">
+            <mat-option *ngFor="let s of salles" [value]="s.id">{{ s.numero }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Niveau</mat-label>
+          <mat-select formControlName="niveauScolaire">
+            <mat-option *ngFor="let n of niveaux" [value]="n">{{ n }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <h4>Produits associés</h4>
+      <div formArrayName="produits">
+        <div *ngFor="let p of produitsFormArray.controls; let i=index" [formGroupName]="i" class="line">
+          <mat-form-field>
+            <mat-label>Produit</mat-label>
+            <mat-select formControlName="produit">
+              <mat-option *ngFor="let prod of produits" [value]="prod">{{ prod.designation }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Quantité</mat-label>
+            <input matInput type="number" formControlName="quantite" />
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removeProduit(i)"><mat-icon>delete</mat-icon></button>
+        </div>
+        <button mat-button type="button" (click)="addProduit()">+ Ajouter produit</button>
+      </div>
+
+      <h4>Préparations associées</h4>
+      <div formArrayName="preparations">
+        <div *ngFor="let p of preparationsFormArray.controls; let i=index" [formGroupName]="i" class="line">
+          <mat-form-field>
+            <mat-label>Préparation</mat-label>
+            <mat-select formControlName="preparation">
+              <mat-option *ngFor="let prep of preparations" [value]="prep">{{ prep.designation }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Quantité</mat-label>
+            <input matInput type="number" formControlName="quantite" />
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removePreparation(i)"><mat-icon>delete</mat-icon></button>
+        </div>
+        <button mat-button type="button" (click)="addPreparation()">+ Ajouter préparation</button>
+      </div>
+
+      <mat-card-actions align="end">
+        <button mat-raised-button color="primary" (click)="submit()">Enregistrer</button>
+        <button mat-raised-button (click)="close()">Annuler</button>
+      </mat-card-actions>
+    </form>
+  </mat-card-content>
+</mat-card>

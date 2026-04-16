@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="forms-container">
+    <div class="signin-signup">
+      <form class="sign-up-form" (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+        <h2 class="title">Créer un compte</h2>
+
+        <!-- Prénom -->
+        <div class="input-field">
+          <i class="fas fa-user"></i>
+          <input formControlName="firstName" type="text" placeholder="Prénom" />
+        </div>
+        <div *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid" class="error-message">
+          Le prénom est requis
+        </div>
+
+        <!-- Nom -->
+        <div class="input-field">
+          <i class="fas fa-user"></i>
+          <input formControlName="lastName" type="text" placeholder="Nom" />
+        </div>
+        <div *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid" class="error-message">
+          Le nom est requis
+        </div>
+
+        <!-- Email -->
+        <div class="input-field">
+          <i class="fas fa-envelope"></i>
+          <input formControlName="email" type="email" placeholder="Email" />
+        </div>
+        <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="error-message">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">L'email est requis</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="input-field">
+          <i class="fas fa-lock"></i>
+          <input formControlName="password" type="password" placeholder="Mot de passe" />
+        </div>
+        <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="error-message">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 8 caractères</span>
+        </div>
+
+        <!-- Confirmation mot de passe -->
+        <div class="input-field">
+          <i class="fas fa-lock"></i>
+          <input formControlName="confirmPassword" type="password" placeholder="Confirmer le mot de passe" />
+        </div>
+        <div *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched" class="error-message">
+          Les mots de passe ne correspondent pas
+        </div>
+
+        <!-- Rôle -->
+        <div class="input-field">
+          <i class="fas fa-user-tag"></i>
+          <select formControlName="role">
+            <option value="PREPARATEUR">Préparateur</option>
+            <option value="PROFFESSEUR">Professeur</option>
+            <option value="DIRECTEUR">Directeur</option>
+            <option value="ADMINISTRATEUR">Administrateur</option>
+          </select>
+        </div>
+
+        <input type="submit" value="S'inscrire" class="btn solid" [disabled]="!registerForm.valid" />
+
+        <p class="social-text">Déjà un compte ?</p>
+        <button type="button" class="btn transparent" (click)="goToLogin()">Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="panels-container">
+    <div class="panel left-panel">
+      <div class="content">
+        <h3>Déjà inscrit ?</h3>
+        <p>Connectez-vous à votre compte pour accéder à l'application</p>
+        <button class="btn transparent" (click)="goToLogin()">Se connecter</button>
+      </div>
+      <img src="assets/register.svg" class="image" alt="" />
+    </div>
+  </div>
+</div>

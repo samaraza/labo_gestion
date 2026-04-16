@@ -1,0 +1,59 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/labo_gestion
+    username: usernames
+    password: passwords
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: hilalisamaraza@gmail.com
+    password: nibh ohia djvh cdab
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: "*"
+        starttls:
+          enable: true
+
+
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+      protocol: smtp
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+
+  file:
+    uploads:
+      photos-output-path: ./uploads
+
+
+
+server:
+  port: 8089
+  servlet:
+    context-path: /api/v1/
+
