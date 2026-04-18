@@ -1,10 +1,15 @@
+server:
+  port: ${PORT:8089}
+  address: 0.0.0.0
+  servlet:
+    context-path: /api/v1/
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/labo_gestion
-    username: usernames
-    password: passwords
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,12 +19,9 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
   mail:
-    host: smtp.gmail.com
+    host: ${EMAIL_HOSTNAME}
     port: 465
-    username: hilalisamaraza@gmail.com
-    password: nibh ohia djvh cdab
     properties:
       mail:
         smtp:
@@ -29,12 +31,9 @@ spring:
             trust: "*"
         starttls:
           enable: true
-
-
         connectiontimeout: 5000
         timeout: 3000
         writetimeout: 5000
-
       protocol: smtp
 
 application:
@@ -45,15 +44,11 @@ application:
   mailing:
     frontend:
       activation-url: http://localhost:4200/activate-account
-
+  cors:
+    origins: http://localhost:4200, http://localhost:8080
   file:
     uploads:
       photos-output-path: ./uploads
 
-
-
-server:
-  port: 8089
-  servlet:
-    context-path: /api/v1/
-
+springdoc:
+  default-produces-media-type: application-json

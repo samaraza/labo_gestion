@@ -18,5 +18,8 @@ EXPOSE 8089
 
 ENV DB_URL=jdbc:postgresql://postgres-sql-labo:5432/labo_gestion
 ENV ACTIVE_PROFILE=${PROFILE}
+ENV EMAIL_HOSTNAME=missing_host_name
+ENV EMAIL_USER_NAME=missing_user_name
+ENV EMAIL_PASSWORD=missing_password
 
-CMD java -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} -jar app.jar
+CMD java -Dspring.profiles.active=${ACTIVE_PROFILE} -Dserver.address=0.0.0.0 -jar app.jar
