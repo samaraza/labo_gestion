@@ -6,7 +6,7 @@ import { Armoire } from '../models/armoire';
 
 @Injectable({ providedIn: 'root' })
 export class ArmoireService {
-  private baseUrl = 'http://localhost:8089/api/v1/armoires';
+  private baseUrl = 'https://labo_gestion_api.onrender.com/api/v1/armoires';
 
   constructor(private http: HttpClient) {}
 

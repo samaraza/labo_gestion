@@ -5,7 +5,7 @@ import { TpDTO } from '../models/tp.dto';
 
 @Injectable({ providedIn: 'root' })
 export class TpService {
-  private baseUrl = 'http://localhost:8089/api/v1/tps';
+  private baseUrl = 'https://labo_gestion_api.onrender.com/api/v1/tps';
 
   constructor(private http: HttpClient) {}
 

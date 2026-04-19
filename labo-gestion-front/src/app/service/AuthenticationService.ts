@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthenticationService {
 
-  private baseUrl = 'http://localhost:8089/api/v1/auth';
+  private baseUrl = 'https://labo_gestion_api.onrender.com/api/v1/auth';
 
   constructor(private httpClient: HttpClient) { }
 
