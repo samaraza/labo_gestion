@@ -43,9 +43,9 @@ application:
       expiration: 8640000
   mailing:
     frontend:
-      activation-url: http://localhost:4200/activate-account
+      activation-url: https://labo-ui.onrender.com/activate-account
   cors:
-    origins: http://localhost:4200, http://localhost:8080
+    origins: http://localhost:4200, http://localhost:8080, https://labo-ui.onrender.com
   file:
     uploads:
       photos-output-path: ./uploads
