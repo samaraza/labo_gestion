@@ -6,7 +6,7 @@ import { Preparation } from '../models/preparation';
 
 @Injectable({ providedIn: 'root' })
 export class PreparationService {
-  private baseUrl = 'https://labo_gestion.onrender.com/api/v1/preparations';
+  private baseUrl = 'https://labo-gestion.onrender.com/api/v1/preparations';
 
   constructor(private http: HttpClient) {}
 
