@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private baseUrl = 'https://labo_gestion_api.onrender.com/api/v1/users';
+  private baseUrl = 'https://labo_gestion.onrender.com/api/v1/users';
 
   constructor(private http: HttpClient) {}
 

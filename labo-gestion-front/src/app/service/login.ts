@@ -9,7 +9,7 @@ import { User } from '../models/user';
 })
 export class LoginService {
 
-  private baseUrl = 'https://labo_gestion_api.onrender.com/api/v1/auth';
+  private baseUrl = 'https://labo_gestion.onrender.com/api/v1/auth';
 
   public connectedUser: User = new User();
   public roles: string = "";
