@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SalleTpService {
-  private baseUrl = 'https://labo-gestion.onrender.com/api/v1/salle-tps';
+  private baseUrl = 'https://labo-gestion-api.onrender.com/api/v1/salle-tps';
 
   constructor(private http: HttpClient) {}
 

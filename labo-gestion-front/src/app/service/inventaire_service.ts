@@ -5,7 +5,7 @@ import { Inventaire } from '../models/inventaire';
 
 @Injectable({ providedIn: 'root' })
 export class InventaireService {
-  private baseUrl = 'https://labo-gestion.onrender.com/api/v1/inventaires';
+  private baseUrl = 'https://labo-gestion-api.onrender.com/api/v1/inventaires';
 
   constructor(private httpClient: HttpClient) {}
 

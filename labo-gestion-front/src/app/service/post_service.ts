@@ -5,7 +5,7 @@ import { Post } from '../models/post';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
-  private baseUrl = 'https://labo-gestion.onrender.com/api/v1/posts';
+  private baseUrl = 'https://labo-gestion-api.onrender.com/api/v1/posts';
 
   constructor(private httpClient: HttpClient) {}
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class RegisterService {
 
-  private baseUrl = 'https://labo-gestion.onrender.com/api/v1/auth';
+  private baseUrl = 'https://labo-gestion-api.onrender.com/api/v1/auth';
 
   constructor(private httpClient: HttpClient) { }
 
