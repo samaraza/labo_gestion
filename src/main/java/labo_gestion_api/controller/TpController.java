@@ -10,6 +10,7 @@ import labo_gestion_api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -36,10 +37,37 @@ public class TpController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ✅ جلب TPs للمدرسة الحالية فقط
+    @GetMapping("/my-school")
+    public ResponseEntity<List<TpDTO>> getTpsForCurrentSchool(Authentication authentication) {
+        List<Tp> tps = tpService.findTpsForCurrentSchool(authentication);
+        List<TpDTO> dtos = tps.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // ✅ جلب TPs مع التفاصيل للمدرسة الحالية
+    @GetMapping("/my-school/with-details")
+    public ResponseEntity<List<TpDTO>> getTpsWithDetailsForCurrentSchool(Authentication authentication) {
+        List<Tp> tps = tpService.findTpsWithDetailsForCurrentSchool(authentication);
+        List<TpDTO> dtos = tps.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TpDTO> getTpById(@PathVariable Long id) {
         Tp tp = tpService.findById(id);
         return ResponseEntity.ok(convertToDTO(tp));
+    }
+
+    // ✅ إنشاء TP جديد للمدرسة الحالية
+    @PostMapping("/my-school")
+    public ResponseEntity<TpDTO> createTpForCurrentSchool(
+            @RequestBody TpDTO tpDto,
+            Authentication authentication) {
+
+        Tp tp = convertToEntity(tpDto);
+        Tp savedTp = tpService.saveForCurrentSchool(tp, authentication);
+        return new ResponseEntity<>(convertToDTO(savedTp), HttpStatus.CREATED);
     }
 
     @PostMapping
@@ -61,7 +89,6 @@ public class TpController {
         tpService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 
     // ================= CONVERSION ENTITY → DTO =================
     private TpDTO convertToDTO(Tp tp) {
@@ -86,7 +113,6 @@ public class TpController {
             dto.setProfLastName(tp.getProf().getLastname());
         }
 
-        // ✅ تعبئة التحضيرات
         if (tp.getPreparations() != null) {
             List<PreparationDTO> prepDTOs = new ArrayList<>();
             for (PreparationTP prepTP : tp.getPreparations()) {
@@ -102,7 +128,6 @@ public class TpController {
             dto.setPreparations(prepDTOs);
         }
 
-        // ✅ تعبئة المنتجات
         if (tp.getProduits() != null) {
             List<ProduitDTO> prodDTOs = new ArrayList<>();
             for (ProduitTP prodTP : tp.getProduits()) {
@@ -143,7 +168,6 @@ public class TpController {
             tp.setSalleTp(salle);
         }
 
-        // ✅ تعبئة التحضيرات من DTO
         if (dto.getPreparations() != null) {
             for (PreparationDTO prepDto : dto.getPreparations()) {
                 if (prepDto.getPreparationId() != null) {
@@ -157,7 +181,6 @@ public class TpController {
             }
         }
 
-        // ✅ تعبئة المنتجات من DTO
         if (dto.getProduits() != null) {
             for (ProduitDTO prodDto : dto.getProduits()) {
                 if (prodDto.getProduitId() != null) {
@@ -172,6 +195,4 @@ public class TpController {
         }
         return tp;
     }
-
-
 }

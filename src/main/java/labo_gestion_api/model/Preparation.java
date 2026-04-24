@@ -55,6 +55,11 @@ public class Preparation {
     @JsonIgnore
     private List<PreparationTP> preparationTPs = new ArrayList<>();
 
+    // ✅ أضف هذا - ربط التحضير بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
+
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;

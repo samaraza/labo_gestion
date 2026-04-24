@@ -88,4 +88,12 @@ public class Tp {
         produits.forEach(prod -> prod.setTravailPratique(null));
         produits.clear();
     }
+
+
+
+
+    // ✅ أضف هذا
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
 }

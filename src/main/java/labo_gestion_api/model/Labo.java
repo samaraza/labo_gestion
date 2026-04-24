@@ -25,8 +25,12 @@ public class Labo {
 
     // ✅ علاقة One-to-Many مع SalleTp
     @OneToMany(mappedBy = "labo", cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true)
-    //@JsonIgnore
     private List<SalleTp> salleTps = new ArrayList<>();
+
+    // ✅ أضف هذا - ربط المختبر بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
 
     // Helper methods
     public void addSalleTp(SalleTp salleTp) {

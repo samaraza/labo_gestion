@@ -4,10 +4,12 @@ import labo_gestion_api.model.Commande;
 import labo_gestion_api.model.User;
 import labo_gestion_api.repository.UserRepository;
 import labo_gestion_api.service.CommandeService;
+import labo_gestion_api.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
@@ -27,7 +29,7 @@ public class CommandeController {
 
     private final CommandeService commandeService;
     private final UserRepository userRepository;
-
+    private final UserService userService;  // ✅ أضف هذا
 
     @GetMapping
     public ResponseEntity<List<CommandeDTO>> getAllCommandes() {
@@ -36,6 +38,125 @@ public class CommandeController {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
+    }
+
+    // ✅ جلب جميع الطلبيات للمدرسة الحالية
+    @GetMapping("/my-school")
+    public ResponseEntity<List<CommandeDTO>> getCommandesForCurrentSchool(Authentication authentication) {
+        List<Commande> commandes = commandeService.findCommandesForCurrentSchool(authentication);
+        List<CommandeDTO> dtos = commandes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // ✅ جلب الطلبيات مع التفاصيل للمدرسة الحالية
+    @GetMapping("/my-school/with-details")
+    public ResponseEntity<List<CommandeDTO>> getCommandesWithDetailsForCurrentSchool(Authentication authentication) {
+        List<Commande> commandes = commandeService.findCommandesWithDetailsForCurrentSchool(authentication);
+        List<CommandeDTO> dtos = commandes.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
+
+    // ✅ جلب طلبية بالمعرف (String)
+    @GetMapping("/{id}")
+    public ResponseEntity<Commande> getCommandeById(@PathVariable String id) {
+        Commande commande = commandeService.findById(id);
+        return ResponseEntity.ok(commande);
+    }
+
+    // ✅ إنشاء طلبية جديدة للمدرسة الحالية
+    @PostMapping("/my-school")
+    public ResponseEntity<CommandeDTO> createCommandeForCurrentSchool(
+            @RequestBody Commande commande,
+            Authentication authentication) {
+
+        if (commande.getUser() != null && commande.getUser().getId() != null) {
+            Integer userId = commande.getUser().getId();
+            User fullUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            commande.setUser(fullUser);
+        }
+
+        Commande savedCommande = commandeService.saveForCurrentSchool(commande, authentication);
+        CommandeDTO dto = convertToDTO(savedCommande);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    @PostMapping
+    public ResponseEntity<CommandeDTO> createCommande(@RequestBody Commande commande) {
+        if (commande.getUser() != null && commande.getUser().getId() != null) {
+            Integer userId = commande.getUser().getId();
+            User fullUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+            commande.setUser(fullUser);
+        }
+        Commande savedCommande = commandeService.save(commande);
+        CommandeDTO dto = convertToDTO(savedCommande);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommandeDTO> updateCommande(
+            @PathVariable String id,
+            @RequestBody Commande updatedCommande) {
+
+        Commande commande = commandeService.findById(id);
+
+        if (updatedCommande.getDesignation() != null) {
+            commande.setDesignation(updatedCommande.getDesignation());
+        }
+        if (updatedCommande.getDate() != null) {
+            commande.setDate(updatedCommande.getDate());
+        }
+        if (updatedCommande.getObservation() != null) {
+            commande.setObservation(updatedCommande.getObservation());
+        }
+        if (updatedCommande.getNumero() != null) {
+            commande.setNumero(updatedCommande.getNumero());
+        }
+        if (updatedCommande.getFournisseur() != null) {
+            commande.setFournisseur(updatedCommande.getFournisseur());
+        }
+
+        if (updatedCommande.getUser() != null && updatedCommande.getUser().getId() != null) {
+            Integer directeurId = updatedCommande.getUser().getId();
+            User directeur = userRepository.findById(directeurId)
+                    .orElseThrow(() -> new RuntimeException("Directeur non trouvé avec id: " + directeurId));
+            commande.setUser(directeur);
+        }
+
+        if (updatedCommande.getProduits() != null) {
+            commande.getProduits().clear();
+            for (var produit : updatedCommande.getProduits()) {
+                commande.addProduit(produit);
+            }
+        }
+
+        Commande updated = commandeService.save(commande);
+        CommandeDTO dto = convertToDTO(updated);
+        return ResponseEntity.ok(dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCommande(@PathVariable String id) {
+        commandeService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/pdf")
+    public void generateCommandePdf(
+            @PathVariable String id,
+            HttpServletResponse response) throws IOException {
+
+        ByteArrayInputStream pdfStream = commandeService.generateCommandePdf(id);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=commande_" + id + ".pdf");
+        response.getOutputStream().write(pdfStream.readAllBytes());
+        response.getOutputStream().flush();
     }
 
     private CommandeDTO convertToDTO(Commande commande) {
@@ -72,95 +193,5 @@ public class CommandeController {
         }
 
         return dto;
-    }
-
-    // ✅ تغيير: استقبال String بدلاً من Long
-    @GetMapping("/{id}")
-    public ResponseEntity<Commande> getCommandeById(@PathVariable String id) {
-        Commande commande = commandeService.findById(id);
-        return ResponseEntity.ok(commande);
-    }
-
-
-
-    @PostMapping
-    public ResponseEntity<CommandeDTO> createCommande(@RequestBody Commande commande) {
-        if (commande.getUser() != null && commande.getUser().getId() != null) {
-            Integer userId = commande.getUser().getId();
-            User fullUser = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-            commande.setUser(fullUser);
-        }
-        Commande savedCommande = commandeService.save(commande);
-        CommandeDTO dto = convertToDTO(savedCommande);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
-    }
-
-    // ✅ تغيير: استقبال String بدلاً من Long
-    @PutMapping("/{id}")
-    public ResponseEntity<CommandeDTO> updateCommande(
-            @PathVariable String id,
-            @RequestBody Commande updatedCommande) {
-
-        Commande commande = commandeService.findById(id);
-
-        // تحديث الحقول (كما هو موجود)
-        if (updatedCommande.getDesignation() != null) {
-            commande.setDesignation(updatedCommande.getDesignation());
-        }
-        if (updatedCommande.getDate() != null) {
-            commande.setDate(updatedCommande.getDate());
-        }
-        if (updatedCommande.getObservation() != null) {
-            commande.setObservation(updatedCommande.getObservation());
-        }
-        if (updatedCommande.getNumero() != null) {
-            commande.setNumero(updatedCommande.getNumero());
-        }
-        if (updatedCommande.getFournisseur() != null) {
-            commande.setFournisseur(updatedCommande.getFournisseur());
-        }
-
-        // معالجة المدير (directeur)
-        if (updatedCommande.getUser() != null && updatedCommande.getUser().getId() != null) {
-            Integer directeurId = updatedCommande.getUser().getId();
-            User directeur = userRepository.findById(directeurId)
-                    .orElseThrow(() -> new RuntimeException("Directeur non trouvé avec id: " + directeurId));
-            commande.setUser(directeur);
-        }
-
-        if (updatedCommande.getProduits() != null) {
-            commande.getProduits().clear();
-            for (var produit : updatedCommande.getProduits()) {
-                commande.addProduit(produit);
-            }
-        }
-
-        Commande updated = commandeService.save(commande);
-
-        // ✅ تحويل الكائن المحفوظ إلى DTO قبل إعادته
-        CommandeDTO dto = convertToDTO(updated);
-        return ResponseEntity.ok(dto);
-    }
-
-    // ✅ تغيير: استقبال String بدلاً من Long
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCommande(@PathVariable String id) {
-        commandeService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // ✅ تغيير: استقبال String بدلاً من Long
-    @GetMapping("/{id}/pdf")
-    public void generateCommandePdf(
-            @PathVariable String id,
-            HttpServletResponse response) throws IOException {
-
-        ByteArrayInputStream pdfStream = commandeService.generateCommandePdf(id);
-
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=commande_" + id + ".pdf");
-        response.getOutputStream().write(pdfStream.readAllBytes());
-        response.getOutputStream().flush();
     }
 }

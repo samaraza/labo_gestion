@@ -28,7 +28,13 @@ public class Post {
     private LocalDateTime date;  // تغيير من String إلى LocalDateTime
 
     @Column(name = "content", columnDefinition = "TEXT")
+
     private String content;
+
+    // ✅ أضف هذا - ربط المنشور بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
 
     // Dates d'audit automatiques
     @CreatedDate

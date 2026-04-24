@@ -54,6 +54,11 @@ public class Commande {
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProduitCommande> produits = new ArrayList<>();
 
+    // ✅ أضف هذا - ربط الأمر بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
+
     // Dates d'audit
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy")

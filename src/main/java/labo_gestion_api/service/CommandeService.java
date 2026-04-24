@@ -4,9 +4,11 @@ import io.jsonwebtoken.io.IOException;
 import labo_gestion_api.model.Commande;
 import labo_gestion_api.model.Produit;
 import labo_gestion_api.model.ProduitCommande;
+import labo_gestion_api.model.User;  // ✅ أضف هذا import
 import labo_gestion_api.repository.CommandeRepository;
 import labo_gestion_api.repository.ProduitRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;  // ✅ أضف هذا import
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,23 +16,50 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CommandeService {
 
-    @Autowired
-    private CommandeRepository commandeRepository;
-
-    @Autowired
-    private ProduitRepository produitRepository;
+    private final CommandeRepository commandeRepository;  // ✅ أضف final
+    private final ProduitRepository produitRepository;    // ✅ أضف final
+    private final UserService userService;                 // ✅ هذا صحيح
 
     public List<Commande> findAll() {
         return commandeRepository.findAllWithUsersAndFournisseurs();
     }
 
-    // ✅ تحويل String إلى Long
     public Commande findById(String id) {
         Long longId = Long.parseLong(id);
         return commandeRepository.findById(longId)
                 .orElseThrow(() -> new RuntimeException("Commande not found with id " + id));
+    }
+
+    // ✅ جلب جميع الطلبيات للمدرسة الحالية
+    public List<Commande> findCommandesForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return commandeRepository.findByEcoleId(currentUser.getEcole().getId());
+    }
+
+    // ✅ جلب الطلبيات مع التفاصيل للمدرسة الحالية
+    public List<Commande> findCommandesWithDetailsForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return commandeRepository.findAllWithUsersAndFournisseursByEcoleId(currentUser.getEcole().getId());
+    }
+
+    // ✅ إضافة طلبية جديدة للمدرسة الحالية
+    @Transactional
+    public Commande saveForCurrentSchool(Commande commande, Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        commande.setEcole(currentUser.getEcole());
+        return save(commande);
     }
 
     @Transactional
@@ -49,14 +78,12 @@ public class CommandeService {
         return commandeRepository.save(commande);
     }
 
-    // ✅ تحويل String إلى Long
     public void deleteById(String id) {
         Long longId = Long.parseLong(id);
         Commande commande = findById(id);
         commandeRepository.deleteById(longId);
     }
 
-    // ✅ تحويل String إلى Long
     public ByteArrayInputStream generateCommandePdf(String id) throws IOException, java.io.IOException {
         Commande commande = findById(id);
         return PdfService.generateCommandePdf(commande);

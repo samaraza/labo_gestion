@@ -1,9 +1,10 @@
 package labo_gestion_api.service;
 
-
 import labo_gestion_api.model.SalleTp;
+import labo_gestion_api.model.User;
 import labo_gestion_api.repository.SalleTpRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,24 +12,62 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor  // ✅ أفضل من @Autowired
 public class SalleTpService {
 
-    @Autowired
-    private SalleTpRepository salleTpRepository;
+    private final SalleTpRepository salleTpRepository;
+    private final UserService userService;  // ✅ أضف هذا
 
     public List<SalleTp> getAllSalleTps() {
         return salleTpRepository.findAll();
     }
 
-    // ✅ تصحيح: تغيير نوع id من String إلى Long
     public SalleTp getSalleTpById(Long id) {
         return salleTpRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SalleTp not found with id " + id));
     }
 
-    // ✅ تصحيح: إنشاء ساعة TP جديدة
+    // ✅ جلب جميع القاعات للمدرسة الحالية
+    public List<SalleTp> getSalleTpsForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return salleTpRepository.findByEcoleId(currentUser.getEcole().getId());
+    }
+
+    // ✅ جلب القاعات مع الخزائن للمدرسة الحالية
+    public List<SalleTp> getSalleTpsWithArmoiresForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return salleTpRepository.findSallesWithArmoiresByEcoleId(currentUser.getEcole().getId());
+    }
+
+    // ✅ إضافة قاعة جديدة للمدرسة الحالية
+    public SalleTp createSalleTpForCurrentSchool(SalleTp salleTp, Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+
+        // التحقق من عدم وجود رقم مكرر لنفس المدرسة
+        if (salleTp.getNumero() != null && !salleTp.getNumero().isEmpty()) {
+            boolean exists = salleTpRepository.existsByNumeroAndEcoleId(
+                    salleTp.getNumero(),
+                    currentUser.getEcole().getId()
+            );
+            if (exists) {
+                throw new RuntimeException("SalleTp with numero " + salleTp.getNumero() + " already exists in this school");
+            }
+        }
+
+        salleTp.setEcole(currentUser.getEcole());  // ✅ ربط القاعة بالمدرسة
+        return salleTpRepository.save(salleTp);
+    }
+
     public SalleTp createSalleTp(SalleTp salleTp) {
-        // التحقق من عدم وجود رقم مكرر
         if (salleTp.getNumero() != null && !salleTp.getNumero().isEmpty()) {
             boolean exists = salleTpRepository.existsByNumero(salleTp.getNumero());
             if (exists) {
@@ -38,12 +77,10 @@ public class SalleTpService {
         return salleTpRepository.save(salleTp);
     }
 
-    // ✅ تصحيح: تحديث ساعة TP
     public SalleTp updateSalleTp(Long id, SalleTp salleTp) {
         SalleTp existingSalleTp = salleTpRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SalleTp not found with id " + id));
 
-        // تحديث الرقم مع التحقق من عدم التكرار
         if (salleTp.getNumero() != null && !salleTp.getNumero().isEmpty()) {
             if (!existingSalleTp.getNumero().equals(salleTp.getNumero())) {
                 boolean exists = salleTpRepository.existsByNumero(salleTp.getNumero());
@@ -57,7 +94,6 @@ public class SalleTpService {
         return salleTpRepository.save(existingSalleTp);
     }
 
-    // ✅ تصحيح: حذف ساعة TP
     public void deleteSalleTp(Long id) {
         SalleTp salleTp = getSalleTpById(id);
         salleTpRepository.deleteById(id);

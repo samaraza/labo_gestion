@@ -1,9 +1,10 @@
 package labo_gestion_api.service;
 
-
 import labo_gestion_api.model.Post;
+import labo_gestion_api.model.User;
 import labo_gestion_api.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,22 +13,52 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor  // ✅ أفضل من @Autowired
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final UserService userService;  // ✅ أضف هذا
 
     public List<Post> findAll() {
         return postRepository.findAll();
     }
 
-    // ✅ تصحيح: تغيير نوع id من String إلى Long
     public Post findById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
     }
 
-    // ✅ تصحيح: تعيين التاريخ تلقائياً عند الإنشاء
+    // ✅ جلب جميع المنشورات للمدرسة الحالية
+    public List<Post> findPostsForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return postRepository.findByEcoleId(currentUser.getEcole().getId());
+    }
+
+    // ✅ جلب المنشورات مرتبة حسب التاريخ للمدرسة الحالية
+    public List<Post> findPostsOrderByDateForCurrentSchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        return postRepository.findByEcoleIdOrderByDateDesc(currentUser.getEcole().getId());
+    }
+
+    // ✅ إضافة منشور جديد للمدرسة الحالية
+    public Post saveForCurrentSchool(Post post, Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+        if (currentUser.getEcole() == null) {
+            throw new RuntimeException("User has no school assigned");
+        }
+        if (post.getDate() == null) {
+            post.setDate(LocalDateTime.now());
+        }
+        post.setEcole(currentUser.getEcole());  // ✅ ربط المنشور بالمدرسة
+        return postRepository.save(post);
+    }
+
     public Post save(Post post) {
         if (post.getDate() == null) {
             post.setDate(LocalDateTime.now());
@@ -35,12 +66,10 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    // ✅ تصحيح: تغيير نوع id من String إلى Long
     public Post update(Long id, Post updatedPost) {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found with id " + id));
 
-        // تحديث الحقول فقط إذا كانت غير null
         if (updatedPost.getTitle() != null) {
             existingPost.setTitle(updatedPost.getTitle());
         }
@@ -50,14 +79,12 @@ public class PostService {
         if (updatedPost.getDate() != null) {
             existingPost.setDate(updatedPost.getDate());
         } else {
-            // تحديث التاريخ تلقائياً عند التعديل
             existingPost.setDate(LocalDateTime.now());
         }
 
         return postRepository.save(existingPost);
     }
 
-    // ✅ تصحيح: تغيير نوع id من String إلى Long
     public void deleteById(Long id) {
         Post post = findById(id);
         postRepository.deleteById(id);

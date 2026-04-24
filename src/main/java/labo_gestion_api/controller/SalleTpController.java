@@ -2,11 +2,14 @@ package labo_gestion_api.controller;
 
 import labo_gestion_api.model.Armoire;
 import labo_gestion_api.model.SalleTp;
+import labo_gestion_api.model.User;
 import labo_gestion_api.service.ArmoireService;
 import labo_gestion_api.service.SalleTpService;
+import labo_gestion_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +22,26 @@ public class SalleTpController {
 
     private final SalleTpService salleTpService;
     private final ArmoireService armoireService;
+    private final UserService userService;  // ✅ أضف هذا
 
-    // ✅ الحصول على جميع قاعات TP
+    // ✅ الحصول على جميع قاعات TP (للمدير العام)
     @GetMapping
     public ResponseEntity<List<SalleTp>> getAllSalleTps() {
         List<SalleTp> salleTps = salleTpService.getAllSalleTps();
+        return ResponseEntity.ok(salleTps);
+    }
+
+    // ✅ جلب قاعات TP للمدرسة الحالية فقط
+    @GetMapping("/my-school")
+    public ResponseEntity<List<SalleTp>> getSalleTpsForCurrentSchool(Authentication authentication) {
+        List<SalleTp> salleTps = salleTpService.getSalleTpsForCurrentSchool(authentication);
+        return ResponseEntity.ok(salleTps);
+    }
+
+    // ✅ جلب قاعات TP مع الخزائن للمدرسة الحالية
+    @GetMapping("/my-school/with-armoires")
+    public ResponseEntity<List<SalleTp>> getSalleTpsWithArmoiresForCurrentSchool(Authentication authentication) {
+        List<SalleTp> salleTps = salleTpService.getSalleTpsWithArmoiresForCurrentSchool(authentication);
         return ResponseEntity.ok(salleTps);
     }
 
@@ -34,41 +52,59 @@ public class SalleTpController {
         return ResponseEntity.ok(salleTp);
     }
 
-    // ✅ إنشاء قاعة TP جديدة
-    @PostMapping
-    public ResponseEntity<SalleTp> createSalleTp(@RequestBody SalleTp salleTp) {
-        // 1. حفظ القاعة بدون أرفف (لأن التتالي أزيل)
-        SalleTp saved = salleTpService.createSalleTp(salleTp);
+    // ✅ إنشاء قاعة TP جديدة للمدرسة الحالية
+    @PostMapping("/my-school")
+    public ResponseEntity<SalleTp> createSalleTpForCurrentSchool(
+            @RequestBody SalleTp salleTp,
+            Authentication authentication) {
 
-        // 2. ربط الأرفف المختارة بهذه القاعة
+        // حفظ القاعة مع ربطها بالمدرسة الحالية
+        SalleTp saved = salleTpService.createSalleTpForCurrentSchool(salleTp, authentication);
+
+        // ربط الأرفف المختارة بهذه القاعة
         if (salleTp.getArmoires() != null) {
             for (Armoire armoire : salleTp.getArmoires()) {
                 if (armoire.getId() != null) {
                     Armoire existing = armoireService.findById(armoire.getId());
-                    existing.setSalleTp(saved);          // تعيين المفتاح الأجنبي
-                    armoireService.save(existing);        // تحديث في قاعدة البيانات
+                    existing.setSalleTp(saved);
+                    armoireService.save(existing);
                 }
             }
         }
 
-        // 3. إعادة تحميل القاعة مع الأرفف (لضمان ظهورها في الرد)
+        // إعادة تحميل القاعة مع الأرفف
         saved = salleTpService.getSalleTpById(saved.getId());
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
+    // ✅ إنشاء قاعة TP جديدة (قديم)
+    @PostMapping
+    public ResponseEntity<SalleTp> createSalleTp(@RequestBody SalleTp salleTp) {
+        SalleTp saved = salleTpService.createSalleTp(salleTp);
 
+        if (salleTp.getArmoires() != null) {
+            for (Armoire armoire : salleTp.getArmoires()) {
+                if (armoire.getId() != null) {
+                    Armoire existing = armoireService.findById(armoire.getId());
+                    existing.setSalleTp(saved);
+                    armoireService.save(existing);
+                }
+            }
+        }
+
+        saved = salleTpService.getSalleTpById(saved.getId());
+        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    }
 
     // ✅ تحديث قاعة TP
     @PutMapping("/{id}")
     public ResponseEntity<SalleTp> updateSalleTp(@PathVariable Long id, @RequestBody SalleTp salleTp) {
         SalleTp existing = salleTpService.getSalleTpById(id);
 
-        // تحديث رقم القاعة
         if (salleTp.getNumero() != null) {
             existing.setNumero(salleTp.getNumero());
         }
 
-        // إعادة ربط الأرفف: أولاً فك الارتباط عن الأرفف القديمة
         if (existing.getArmoires() != null) {
             for (Armoire a : existing.getArmoires()) {
                 a.setSalleTp(null);
@@ -77,7 +113,6 @@ public class SalleTpController {
             existing.getArmoires().clear();
         }
 
-        // ثم ربط الأرفف الجديدة
         if (salleTp.getArmoires() != null) {
             for (Armoire a : salleTp.getArmoires()) {
                 if (a.getId() != null) {
@@ -91,8 +126,6 @@ public class SalleTpController {
 
         return ResponseEntity.ok(salleTpService.updateSalleTp(id, existing));
     }
-
-
 
     // ✅ حذف قاعة TP
     @DeleteMapping("/{id}")

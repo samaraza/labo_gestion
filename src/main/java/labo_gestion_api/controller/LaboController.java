@@ -4,9 +4,11 @@ import labo_gestion_api.model.Labo;
 import labo_gestion_api.model.SalleTp;
 import labo_gestion_api.repository.SalleTpRepository;
 import labo_gestion_api.service.LaboService;
+import labo_gestion_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class LaboController {
 
     private final LaboService laboService;
     private final SalleTpRepository salleTpRepository;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<List<Labo>> getAllLabos() {
@@ -27,7 +30,20 @@ public class LaboController {
         return ResponseEntity.ok(labos);
     }
 
-    // ✅ تحويل String إلى Long
+    // ✅ جلب المختبرات للمدرسة الحالية فقط
+    @GetMapping("/my-school")
+    public ResponseEntity<List<Labo>> getLabosForCurrentSchool(Authentication authentication) {
+        List<Labo> labos = laboService.getLabosForCurrentSchool(authentication);
+        return ResponseEntity.ok(labos);
+    }
+
+    // ❌ هذا الـ endpoint يسبب الخطأ - قم بإزالته أو أضف الدالة في LaboService
+    // @GetMapping("/my-school/with-salles")
+    // public ResponseEntity<List<Labo>> getLabosWithSallesForCurrentSchool(Authentication authentication) {
+    //     List<Labo> labos = laboService.getLabosWithSallesForCurrentSchool(authentication);
+    //     return ResponseEntity.ok(labos);
+    // }
+
     @GetMapping("/{id}")
     public ResponseEntity<Labo> getLaboById(@PathVariable String id) {
         Long longId = Long.parseLong(id);
@@ -35,9 +51,11 @@ public class LaboController {
         return ResponseEntity.ok(labo);
     }
 
-    @PostMapping
-    public ResponseEntity<Labo> createLabo(@RequestBody Labo labo) {
-        // 1. تحميل كائنات SalleTp المدارة من قاعدة البيانات باستخدام الـ IDs المرسلة
+    @PostMapping("/my-school")
+    public ResponseEntity<Labo> createLaboForCurrentSchool(
+            @RequestBody Labo labo,
+            Authentication authentication) {
+
         List<SalleTp> managedSalleTps = new ArrayList<>();
         if (labo.getSalleTps() != null) {
             for (SalleTp st : labo.getSalleTps()) {
@@ -49,29 +67,42 @@ public class LaboController {
             }
         }
 
-        // 2. تعيين القائمة المدارة إلى المختبر
         labo.setSalleTps(managedSalleTps);
-
-        // 3. ربط كل قاعة TP بالمختبر (لضمان الاتجاهين)
         for (SalleTp st : managedSalleTps) {
             st.setLabo(labo);
         }
 
-        // 4. حفظ المختبر (الآن جميع الكائنات مدارة ولن يحدث خطأ)
+        Labo savedLabo = laboService.createLaboForCurrentSchool(labo, authentication);
+        return new ResponseEntity<>(savedLabo, HttpStatus.CREATED);
+    }
+
+    @PostMapping
+    public ResponseEntity<Labo> createLabo(@RequestBody Labo labo) {
+        List<SalleTp> managedSalleTps = new ArrayList<>();
+        if (labo.getSalleTps() != null) {
+            for (SalleTp st : labo.getSalleTps()) {
+                if (st.getId() != null) {
+                    SalleTp existing = salleTpRepository.findById(st.getId())
+                            .orElseThrow(() -> new RuntimeException("SalleTp non trouvée avec id: " + st.getId()));
+                    managedSalleTps.add(existing);
+                }
+            }
+        }
+
+        labo.setSalleTps(managedSalleTps);
+        for (SalleTp st : managedSalleTps) {
+            st.setLabo(labo);
+        }
+
         Labo savedLabo = laboService.createLabo(labo);
         return new ResponseEntity<>(savedLabo, HttpStatus.CREATED);
     }
 
-    // ✅ تحويل String إلى Long
     @PutMapping("/{id}")
     public ResponseEntity<Labo> updateLabo(@PathVariable Long id, @RequestBody Labo labo) {
-        // 1. جلب المختبر الموجود من قاعدة البيانات (مع قاعاته الحالية)
         Labo existingLabo = laboService.getLaboById(id);
-
-        // 2. تحديث الحقول البسيطة
         existingLabo.setLaboType(labo.getLaboType());
 
-        // 3. معالجة قاعات TP: تحميل الكائنات المدارة وتعيينها
         List<SalleTp> newManagedSalleTps = new ArrayList<>();
         if (labo.getSalleTps() != null) {
             for (SalleTp st : labo.getSalleTps()) {
@@ -83,21 +114,17 @@ public class LaboController {
             }
         }
 
-        // 4. إزالة العلاقة القديمة بين المختبر وقاعات TP
         existingLabo.getSalleTps().forEach(st -> st.setLabo(null));
         existingLabo.getSalleTps().clear();
 
-        // 5. إضافة العلاقات الجديدة
         for (SalleTp st : newManagedSalleTps) {
-            existingLabo.addSalleTp(st);  // هذه الدالة تضبط st.setLabo(existingLabo) وتضيف للقائمة
+            existingLabo.addSalleTp(st);
         }
 
-        // 6. حفظ المختبر المُحدَّث
         Labo updatedLabo = laboService.updateLabo(id, existingLabo);
         return ResponseEntity.ok(updatedLabo);
     }
 
-    // ✅ تحويل String إلى Long
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLabo(@PathVariable String id) {
         Long longId = Long.parseLong(id);

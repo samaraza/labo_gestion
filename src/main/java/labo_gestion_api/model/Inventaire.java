@@ -46,6 +46,11 @@ public class Inventaire {
 
     private Produit produit;
 
+    // ✅ أضف هذا - ربط المخزون بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
+
     // Dates d'audit
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)

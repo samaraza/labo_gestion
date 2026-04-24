@@ -30,7 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import labo_gestion_api.model.Ecole;
+import labo_gestion_api.repository.EcoleRepository;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -43,6 +44,7 @@ public class AuthenticationService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final EcoleRepository ecoleRepository;
 
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
@@ -177,5 +179,41 @@ public class AuthenticationService {
 
         savedToken.setValidatedAt(LocalDateTime.now());
         tokenRepository.save(savedToken);
+    }
+
+
+
+
+    // ✅ دالة جديدة لتسجيل مستخدم مع مدرسة (للمدير)
+    @Transactional
+    public User registerUserWithSchool(RegistrationRequest request, Integer ecoleId, RoleEnum schoolRole) throws MessagingException {
+        // 1. تحديد الدور الرئيسي للمستخدم
+        String tempRole = request.getRole();
+        String roleName = (tempRole == null || tempRole.isBlank()) ? "USER" : tempRole;
+
+        RoleEnum roleEnum = RoleEnum.valueOf(roleName);
+        var userRole = roleRepository.findByName(roleEnum)
+                .orElseThrow(() -> new IllegalStateException("Role " + roleName + " was not initiated"));
+
+        // 2. جلب المدرسة
+        Ecole ecole = ecoleRepository.findById(ecoleId)
+                .orElseThrow(() -> new RuntimeException("School not found with id: " + ecoleId));
+
+        // 3. إنشاء المستخدم مع المدرسة
+        var user = User.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .accountLocked(false)
+                .enabled(true)
+                .roles(List.of(userRole))
+                .ecole(ecole)  // ✅ ربط المستخدم بمدرسة
+                .schoolRole(schoolRole)  // ✅ تحديد دوره داخل المدرسة (PROFFESSEUR أو PREPARATEUR)
+                .build();
+
+        userRepository.save(user);
+        sendValidationEmail(user);
+        return user;
     }
 }

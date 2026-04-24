@@ -6,9 +6,11 @@ import labo_gestion_api.model.Inventaire;
 import labo_gestion_api.model.Produit;
 import labo_gestion_api.repository.ProduitRepository;
 import labo_gestion_api.service.InventaireService;
+import labo_gestion_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,17 +19,30 @@ import java.util.List;
 @RequestMapping("/inventaires")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
-
 public class InventaireController {
 
     private final InventaireService inventaireService;
     private final ProduitRepository produitRepository;
+    private final UserService userService;  // ✅ أضف هذا
 
-
-    // ✅ الحصول على جميع المخزونات
+    // ✅ الحصول على جميع المخزونات (للمدير العام)
     @GetMapping
     public ResponseEntity<List<Inventaire>> getAllInventaires() {
         List<Inventaire> inventaires = inventaireService.findAll();
+        return ResponseEntity.ok(inventaires);
+    }
+
+    // ✅ جلب المخزونات للمدرسة الحالية فقط
+    @GetMapping("/my-school")
+    public ResponseEntity<List<Inventaire>> getInventairesForCurrentSchool(Authentication authentication) {
+        List<Inventaire> inventaires = inventaireService.findInventairesForCurrentSchool(authentication);
+        return ResponseEntity.ok(inventaires);
+    }
+
+    // ✅ جلب المخزونات مع المنتجات للمدرسة الحالية
+    @GetMapping("/my-school/with-produits")
+    public ResponseEntity<List<Inventaire>> getInventairesWithProduitsForCurrentSchool(Authentication authentication) {
+        List<Inventaire> inventaires = inventaireService.findInventairesWithProduitsForCurrentSchool(authentication);
         return ResponseEntity.ok(inventaires);
     }
 
@@ -38,8 +53,28 @@ public class InventaireController {
         return ResponseEntity.ok(inventaire);
     }
 
-    // ✅ إنشاء مخزون جديد
+    // ✅ إنشاء مخزون جديد للمدرسة الحالية
+    @PostMapping("/my-school")
+    public ResponseEntity<Inventaire> createInventaireForCurrentSchool(
+            @RequestBody InventaireRequest request,
+            Authentication authentication) {
 
+        Inventaire inventaire = new Inventaire();
+        inventaire.setAnneeScolaire(request.getAnneeScolaire());
+        inventaire.setCommentaire(request.getCommentaire());
+        inventaire.setDate(request.getDate());
+        inventaire.setResponsable(request.getResponsable());
+        inventaire.setQuantiteRestante(request.getQuantiteRestante());
+
+        Produit produit = produitRepository.findById(request.getProduitId())
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé avec id: " + request.getProduitId()));
+        inventaire.setProduit(produit);
+
+        Inventaire savedInventaire = inventaireService.saveForCurrentSchool(inventaire, authentication);
+        return new ResponseEntity<>(savedInventaire, HttpStatus.CREATED);
+    }
+
+    // ✅ إنشاء مخزون جديد (قديم)
     @PostMapping
     public ResponseEntity<Inventaire> createInventaire(@RequestBody InventaireRequest request) {
         Inventaire inventaire = new Inventaire();
@@ -64,14 +99,12 @@ public class InventaireController {
 
         Inventaire existingInventaire = inventaireService.findById(id);
 
-        // تحديث الحقول
         existingInventaire.setAnneeScolaire(request.getAnneeScolaire());
         existingInventaire.setCommentaire(request.getCommentaire());
-        existingInventaire.setDate(request.getDate()); // تحويل التاريخ
+        existingInventaire.setDate(request.getDate());
         existingInventaire.setResponsable(request.getResponsable());
         existingInventaire.setQuantiteRestante(request.getQuantiteRestante());
 
-        // تحديث المنتج (produit)
         Produit produit = produitRepository.findById(request.getProduitId())
                 .orElseThrow(() -> new RuntimeException("Produit non trouvé avec id: " + request.getProduitId()));
         existingInventaire.setProduit(produit);

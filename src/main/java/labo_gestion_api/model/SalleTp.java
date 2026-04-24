@@ -39,6 +39,11 @@ public class SalleTp {
     @OneToMany(mappedBy = "salleTp", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Armoire> armoires = new ArrayList<>();
 
+    // ✅ أضف هذا - ربط القاعة بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
+
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;

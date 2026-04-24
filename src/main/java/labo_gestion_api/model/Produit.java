@@ -87,4 +87,11 @@ public class Produit {
     public Armoire getArmoire() {
         return armoire;
     }
+
+
+
+    // ✅ أضف هذا
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
 }

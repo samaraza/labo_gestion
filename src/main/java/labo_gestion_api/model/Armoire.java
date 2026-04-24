@@ -29,9 +29,17 @@ public class Armoire {
     @JsonIgnore
     private SalleTp salleTp;
 
+
     // العلاقة مع Produit (One-to-Many)
     @OneToMany(mappedBy = "armoire",  orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Produit> produits = new ArrayList<>();
+
+
+    // ✅ أضف هذا - ربط الخزانة بمدرسة
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ecole_id")
+    private Ecole ecole;
+
 
     // ✅ Helper methods - تم التصحيح
     public void addProduit(Produit produit) {
@@ -53,4 +61,7 @@ public class Armoire {
         produits.forEach(produit -> produit.setArmoire(null));
         produits.clear();
     }
+
+
+
 }
