@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.security.core.Authentication;
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -42,6 +42,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
+
         return userRepository.findAll();
     }
 
@@ -99,5 +100,31 @@ public class UserService {
             throw new RuntimeException("The director does not have an associated school.");
         }
         return assignUserToSchool(userId, director.getEcole().getId(), schoolRole);
+    }
+
+
+
+
+
+    // جلب جميع مستخدمي مدرسة المدير الحالي
+    public List<User> getAllUsersByEcole(Integer ecoleId) {
+        return userRepository.findByEcoleId(ecoleId);
+    }
+
+    // جلب الأساتذة فقط من مدرسة محددة
+    public List<User> getProfesseursByEcole(Integer ecoleId) {
+        return userRepository.findByEcoleIdAndSchoolRole(ecoleId, RoleEnum.PROFFESSEUR);
+    }
+
+    // جلب المحضرين فقط من مدرسة محددة
+    public List<User> getPreparateursByEcole(Integer ecoleId) {
+        return userRepository.findByEcoleIdAndSchoolRole(ecoleId, RoleEnum.PREPARATEUR);
+    }
+
+    // دالة مساعدة لجلب المستخدم الحالي
+    public User getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
     }
 }

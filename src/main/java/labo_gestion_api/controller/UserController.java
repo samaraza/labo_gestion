@@ -162,4 +162,46 @@ public class UserController {
         User updatedUser = userService.assignUserToDirectorSchool(userId, roleInSchool, director.getId());
         return ResponseEntity.ok(updatedUser);
     }
+
+
+
+
+    // ✅ جلب جميع مستخدمي نفس المدرسة (مدير + أساتذة + محضرين)
+    @GetMapping("/my-school/all")
+    public ResponseEntity<List<User>> getAllUsersInMySchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+
+        if (currentUser.getEcole() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<User> users = userService.getAllUsersByEcole(currentUser.getEcole().getId());
+        return ResponseEntity.ok(users);
+    }
+
+    // ✅ جلب الأساتذة فقط من نفس المدرسة
+    @GetMapping("/my-school/professeurs")
+    public ResponseEntity<List<User>> getProfesseursInMySchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+
+        if (currentUser.getEcole() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<User> professeurs = userService.getProfesseursByEcole(currentUser.getEcole().getId());
+        return ResponseEntity.ok(professeurs);
+    }
+
+    // ✅ جلب المحضرين فقط من نفس المدرسة
+    @GetMapping("/my-school/preparateurs")
+    public ResponseEntity<List<User>> getPreparateursInMySchool(Authentication authentication) {
+        User currentUser = userService.getCurrentUser(authentication);
+
+        if (currentUser.getEcole() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        List<User> preparateurs = userService.getPreparateursByEcole(currentUser.getEcole().getId());
+        return ResponseEntity.ok(preparateurs);
+    }
 }
