@@ -12,14 +12,12 @@ import java.util.Optional;
 public interface EcoleRepository  extends JpaRepository<Ecole, Long> {
 
 
-    // ✅ تصحيح: تغيير Optional<Object> إلى Optional<Ecole>
+
+    // ✅ البحث بالمدرسة بالمعرف
     @Query("SELECT e FROM Ecole e WHERE e.id = :schoolId")
     Optional<Ecole> findById(@Param("schoolId") Integer schoolId);
 
-    // ✅ إضافة دالة للبحث بالاسم
+    // ✅ البحث بالمدرسة بالاسم
     Optional<Ecole> findByName(String name);
 
-    // ✅ جلب كل المدارس مع المستخدمين (اختياري)
-    @Query("SELECT DISTINCT e FROM Ecole e LEFT JOIN FETCH e.users")
-    List<Ecole> findAllWithUsers();
 }
