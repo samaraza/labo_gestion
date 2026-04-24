@@ -5,30 +5,37 @@ import { Produit } from '../models/produit';
 
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
-  private baseUrl = 'https://labo-gestion-api.onrender.com/api/v1/produits';
-  constructor(private http: HttpClient) {}
+    // ✅ الرابط الأساسي الصحيح لـ API
+    private apiBaseUrl = 'https://labo_gestion_api.onrender.com/api/v1';
+    private produitsUrl = `${this.apiBaseUrl}/produits`;
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-  }
+    constructor(private http: HttpClient) {}
 
-  public getAllProduits(): Observable<Produit[]> {
-    return this.http.get<Produit[]>(this.baseUrl, { headers: this.getHeaders() });
-  }
+    private getHeaders(): HttpHeaders {
+        const token = localStorage.getItem('token');
+        return new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+    }
 
-  public addProduit(produit: any): Observable<Produit> {
-    return this.http.post<Produit>(this.baseUrl, produit, { headers: this.getHeaders() });
-  }
+    // ✅ جلب جميع منتجات المدرسة الحالية فقط
+    public getAllProduits(): Observable<Produit[]> {
+        return this.http.get<Produit[]>(`${this.produitsUrl}/my-school`, { headers: this.getHeaders() });
+    }
 
-  public deleteProduit(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
-  }
+    // ✅ إضافة منتج جديد للمدرسة الحالية
+    public addProduit(produit: any): Observable<Produit> {
+        return this.http.post<Produit>(`${this.produitsUrl}/my-school`, produit, { headers: this.getHeaders() });
+    }
 
-  public updateProduit(produit: any, id: number): Observable<Produit> {
-    return this.http.put<Produit>(`${this.baseUrl}/${id}`, produit, { headers: this.getHeaders() });
-  }
+    // ✅ حذف منتج
+    public deleteProduit(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.produitsUrl}/${id}`, { headers: this.getHeaders() });
+    }
+
+    // ✅ تحديث منتج
+    public updateProduit(produit: any, id: number): Observable<Produit> {
+        return this.http.put<Produit>(`${this.produitsUrl}/${id}`, produit, { headers: this.getHeaders() });
+    }
 }
