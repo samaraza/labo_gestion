@@ -18,12 +18,12 @@ export class PostService {
   }
 
   public getAllPosts(): Observable<Post[]> {
-    return this.httpClient.get<Post[]>(this.baseUrl, { headers: this.getHeaders() });
+    return this.httpClient.get<Post[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addPost(post: any): Observable<Post> {
     console.log('post', post);
-    return this.httpClient.post<Post>(this.baseUrl, post, { headers: this.getHeaders() });
+      return this.httpClient.post<Post>(`${this.baseUrl}/my-school`, post, { headers: this.getHeaders() });
   }
 
   public deletePost(id: number): Observable<void> {

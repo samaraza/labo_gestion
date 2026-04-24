@@ -19,11 +19,11 @@ export class PreparationService {
   }
 
   public getAllPreparations(): Observable<Preparation[]> {
-    return this.http.get<Preparation[]>(this.baseUrl, { headers: this.getHeaders() });
+        return this.http.get<Preparation[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addPreparation(preparation: any): Observable<Preparation> {
-    return this.http.post<Preparation>(this.baseUrl, preparation, { headers: this.getHeaders() });
+    return this.http.post<Preparation>(`${this.baseUrl}/my-school`, preparation, { headers: this.getHeaders() });
   }
 
   public deletePreparation(id: number): Observable<void> {

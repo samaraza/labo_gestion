@@ -18,11 +18,11 @@ export class InventaireService {
   }
 
   public getAllInventaires(): Observable<Inventaire[]> {
-    return this.httpClient.get<Inventaire[]>(this.baseUrl, { headers: this.getHeaders() });
+     return this.httpClient.get<Inventaire[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addInventaire(inventaire: any): Observable<Inventaire> {
-    return this.httpClient.post<Inventaire>(this.baseUrl, inventaire, { headers: this.getHeaders() });
+     return this.httpClient.post<Inventaire>(`${this.baseUrl}/my-school`, inventaire, { headers: this.getHeaders() });
   }
 
   public deleteInventaire(id: number): Observable<void> {

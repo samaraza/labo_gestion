@@ -18,11 +18,11 @@ export class CommandeService {
   }
 
   public getAllCommandes(): Observable<Commande[]> {
-    return this.http.get<Commande[]>(this.baseUrl, { headers: this.getHeaders() });
+    return this.http.get<Commande[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addCommande(commande: any): Observable<Commande> {
-    return this.http.post<Commande>(this.baseUrl, commande, { headers: this.getHeaders() });
+     return this.http.post<Commande>(`${this.baseUrl}/my-school`, commande, { headers: this.getHeaders() });
   }
 
   public deleteCommande(id: number): Observable<void> {

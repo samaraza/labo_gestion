@@ -17,11 +17,11 @@ export class SalleTpService {
   }
 
   public getAllSalleTp(): Observable<any[]> {
-    return this.http.get<any[]>(this.baseUrl, { headers: this.getHeaders() });
+    return this.http.get<any[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addSalleTp(salleTp: any): Observable<any> {
-    return this.http.post(this.baseUrl, salleTp, { headers: this.getHeaders() });
+    return this.http.post(`${this.baseUrl}/my-school`, salleTp, { headers: this.getHeaders() });
   }
 
   public updateSalleTp(salleTp: any, id: number): Observable<any> {

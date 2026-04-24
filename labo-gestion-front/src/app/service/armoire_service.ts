@@ -19,11 +19,11 @@ export class ArmoireService {
   }
 
   public getAllArmoires(): Observable<Armoire[]> {
-    return this.http.get<Armoire[]>(this.baseUrl, { headers: this.getHeaders() });
+     return this.http.get<Armoire[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   public addArmoire(armoire: Armoire): Observable<Armoire> {
-    return this.http.post<Armoire>(this.baseUrl, armoire, { headers: this.getHeaders() });
+       return this.http.post<Armoire>(`${this.baseUrl}/my-school`, armoire, { headers: this.getHeaders() });
   }
 
   public deleteArmoire(id: number): Observable<void> {

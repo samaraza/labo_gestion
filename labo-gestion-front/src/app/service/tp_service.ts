@@ -18,11 +18,11 @@ export class TpService {
   }
 
   getAllTps(): Observable<TpDTO[]> {
-    return this.http.get<TpDTO[]>(this.baseUrl, { headers: this.getHeaders() });
+    return this.http.get<TpDTO[]>(`${this.baseUrl}/my-school`, { headers: this.getHeaders() });
   }
 
   addTp(tp: TpDTO): Observable<TpDTO> {
-    return this.http.post<TpDTO>(this.baseUrl, tp, { headers: this.getHeaders() });
+    return this.http.post<TpDTO>(`${this.baseUrl}/my-school`, tp, { headers: this.getHeaders() });
   }
 
   updateTp(tp: TpDTO, id: number): Observable<TpDTO> {
