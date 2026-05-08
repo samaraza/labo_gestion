@@ -5,7 +5,7 @@ import { Commande } from '../models/commande';
 
 @Injectable({ providedIn: 'root' })
 export class CommandeService {
-   private baseUrl = 'https://labo_gestion_api.onrender.com/commandes';
+   private baseUrl = 'https://labo_gestion_api.onrender.com//api/v1/commandes';
 
   constructor(private http: HttpClient) {}
 

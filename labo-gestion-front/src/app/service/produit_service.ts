@@ -6,7 +6,7 @@ import { Produit } from '../models/produit';
 @Injectable({ providedIn: 'root' })
 export class ProduitService {
     // ✅ الرابط الأساسي الصحيح لـ API
-    private apiBaseUrl = 'https://labo_gestion_api.onrender.com/';
+    private apiBaseUrl = 'https://labo_gestion_api.onrender.com/api/v1/';
     private produitsUrl = `${this.apiBaseUrl}/produits`;
 
     constructor(private http: HttpClient) {}

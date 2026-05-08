@@ -5,7 +5,7 @@ import { Labo } from '../models/labo';
 
 @Injectable({ providedIn: 'root' })
 export class LaboService {
-    private apiBaseUrl = 'https://labo_gestion_api.onrender.com/';
+    private apiBaseUrl = 'https://labo_gestion_api.onrender.com/api/v1/';
     private labosUrl = `${this.apiBaseUrl}/labos`;
 
     constructor(private http: HttpClient) {}

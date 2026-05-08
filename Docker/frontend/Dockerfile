@@ -12,4 +12,4 @@ FROM nginx:alpine
 COPY labo-gestion-front/nginx.conf /etc/nginx/nginx.conf
 # نسخ الملفات الثابتة الناتجة عن البناء
 COPY --from=build-stage /app/dist/labo-gestion-front /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 8089
