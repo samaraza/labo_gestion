@@ -25,7 +25,7 @@ services:
     container_name: labo-api
     image: labo/labo:0.0.4
     ports:
-      - 8089:8089
+      - 80:8089
     networks:
       - spring-demos
     depends_on:
